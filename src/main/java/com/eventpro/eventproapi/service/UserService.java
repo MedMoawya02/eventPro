@@ -8,9 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
-public class userService {
+public class UserService {
     private final UserRepository userRepository;
     @Transactional
     public UserResponse createUtilisateur(UserRegistrationRequest request){
@@ -32,6 +35,11 @@ public class userService {
         }
         User saved=userRepository.save(user);
         return mapToResponse(saved) ;
+    }
+    public List<UserResponse> getAllUsers(){
+        return userRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     private UserResponse mapToResponse(User user){
