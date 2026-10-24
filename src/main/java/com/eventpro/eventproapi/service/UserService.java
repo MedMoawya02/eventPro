@@ -3,6 +3,8 @@ package com.eventpro.eventproapi.service;
 import com.eventpro.eventproapi.dto.request.UserRegistrationRequest;
 import com.eventpro.eventproapi.dto.response.UserResponse;
 import com.eventpro.eventproapi.entity.*;
+import com.eventpro.eventproapi.exception.ResourceNotFoundException;
+import com.eventpro.eventproapi.repository.ReservationRepository;
 import com.eventpro.eventproapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final ReservationRepository reservationRepository;
     @Transactional
     public UserResponse createUtilisateur(UserRegistrationRequest request){
         User user;
@@ -40,6 +43,16 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+    public void delete(Long id){
+        User user=userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("utilisateur not found "+id));
+        if(user instanceof Client){
+            Client client=(Client)user;
+            if(reservationRepository.existsByClientId(client.getId())){
+                throw new IllegalArgumentException("Impossible de supprimé un client ayant des reservations");
+            }
+        }
+        userRepository.delete(user);
     }
 
     private UserResponse mapToResponse(User user){

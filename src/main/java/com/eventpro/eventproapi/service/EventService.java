@@ -107,7 +107,6 @@ public class EventService {
                 .startDate(event.getDateDebut())
                 .endDate(event.getDateFin())
                 .status(event.getStatut().name())
-                // Assurez-vous que le getter dans Organizer s'appelle bien getOrganisationName()
                 .organizerName(event.getOrganisateur().getOrganisationName())
                 .categories(categories)
                 .build();

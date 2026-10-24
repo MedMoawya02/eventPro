@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     Optional<Reservation> findByReference(String reference);
+    boolean existsByClientId(Long id);
 }

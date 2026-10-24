@@ -3,9 +3,7 @@ package com.eventpro.eventproapi.controller;
 import com.eventpro.eventproapi.dto.request.UserRegistrationRequest;
 import com.eventpro.eventproapi.dto.response.UserResponse;
 import com.eventpro.eventproapi.service.UserService;
-// ⬇️ C'EST CET IMPORT QU'IL FAUT ⬇️
 import org.springframework.web.bind.annotation.*;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,12 +20,18 @@ public class UserController { // J'ai mis un U majuscule
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse createUser(@Valid @RequestBody UserRegistrationRequest request){
-        // Vérifiez que la méthode dans UserService s'appelle bien creerUtilisateur (ou createUtilisateur)
+
         return userService.createUtilisateur(request);
     }
 
     @GetMapping
     public List<UserResponse> getAllUsers(){
         return userService.getAllUsers();
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void supprimerUser(@PathVariable Long id){
+        userService.delete(id);
     }
 }
