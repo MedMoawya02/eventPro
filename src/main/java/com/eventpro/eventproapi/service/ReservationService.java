@@ -46,15 +46,15 @@ public class ReservationService {
             }
             categorie.setPlacesReservees(categorie.getPlacesReservees()+ligneRequest.getQuantite());
             categorieBillet.save(categorie);
-            ReservationLine ligne=ReservationLine.builder()
+            LigneReservation ligne=LigneReservation.builder()
                     .reservation(reservation)
-                    .category(categorie)
-                    .quantity(ligneRequest.getQuantite())
-                    .fixedUnitPrice(categorie.getPrixUnitaire())
-                    .subtotal(categorie.getPrixUnitaire().multiply(BigDecimal.valueOf(ligneRequest.getQuantite())))
+                    .categorieBillet(categorie)
+                    .quantite(ligneRequest.getQuantite())
+                    .prixUnitaire(categorie.getPrixUnitaire())
+                    .sousTotal(categorie.getPrixUnitaire().multiply(BigDecimal.valueOf(ligneRequest.getQuantite())))
                     .build();
                     reservation.getLignes().add(ligne);
-                    total=total.add(ligne.getSubtotal());
+                    total=total.add(ligne.getSousTotal());
         }
         reservation.setTotalAmount(total);
         Reservation saved=reservationRepository.save(reservation);

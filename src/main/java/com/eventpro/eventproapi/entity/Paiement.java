@@ -12,7 +12,7 @@ public class Paiement {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    private String cleIdempotence; // Pour éviter les doubles paiements
+    private String idempotencyKey; // Pour éviter les doubles paiements
     private String reference;
     private BigDecimal montant;
     private LocalDateTime datePaiement;
