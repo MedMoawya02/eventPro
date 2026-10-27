@@ -31,7 +31,7 @@ public class Reservation {
     private BigDecimal totalAmount;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private List<ReservationLine> lines;
+    private List<ReservationLine> lignes;
 
     public BigDecimal calculateTotal() { return totalAmount; }
     public void confirm() { this.status = StatutReservation.CONFIRMED; }

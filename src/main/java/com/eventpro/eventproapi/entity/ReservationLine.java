@@ -17,7 +17,7 @@ public class ReservationLine {
 
     @ManyToOne
     @JoinColumn(name = "ticket_category_per_event_id")
-    private TicketCategoriesPerEvent category;
+    private CategorieBillet category;
 
     private int quantity;
     private BigDecimal fixedUnitPrice;

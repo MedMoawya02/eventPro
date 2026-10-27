@@ -4,6 +4,7 @@ import com.eventpro.eventproapi.dto.request.EventCreateRequest;
 import com.eventpro.eventproapi.dto.response.EventResponse;
 import com.eventpro.eventproapi.entity.*;
 import com.eventpro.eventproapi.exception.ResourceNotFoundException;
+import com.eventpro.eventproapi.mapper.EventMapper;
 import com.eventpro.eventproapi.repository.EvenementRepository;
 import com.eventpro.eventproapi.repository.TicketCategoryRepository;
 import com.eventpro.eventproapi.repository.UserRepository;
@@ -19,10 +20,9 @@ import java.util.List;
 public class EventService {
 
     private final EvenementRepository evenementRepository;
-    // On retire TicketCategoryRepository car nous n'en avons plus besoin
     private final UserRepository userRepository;
     private final TicketCategoryRepository ticketCategoryRepository;
-
+    private final EventMapper eventMapper;
     @Transactional
     public EventResponse creerEvenement(EventCreateRequest request) {
 
@@ -66,11 +66,12 @@ public class EventService {
             evenement.getCategories().add(categorie);
         }
 
-        // 4. Sauvegarder en cascade
+        // 4. Sauvegarder
         Evenement saved = evenementRepository.save(evenement);
 
         // 5. Retourner la réponse
-        return mapToResponse(saved);
+//        return mapToResponse(saved);
+        return eventMapper.toResponse(saved);
     }
     @Transactional
     public EventResponse publierEvenement(Long eventID){
@@ -84,31 +85,33 @@ public class EventService {
         //sauvegarder
         Evenement saved=evenementRepository.save(evenement);
         //retourner la reponse
-        return mapToResponse(saved);
+//        return mapToResponse(saved);
+        return eventMapper.toResponse(saved);
 
     }
-    private EventResponse mapToResponse(Evenement event) {
-        List<EventResponse.CategoryResponse> categories = event.getCategories().stream()
-                .map(c -> EventResponse.CategoryResponse.builder()
-                        .id(c.getId())
-                        .categoryName(c.getCategory().getName())
-                        .unitPrice(c.getPrixUnitaire())
-                        .totalQuantity(c.getQuantiteTotale())
-                        .availablePlaces(c.getPlacesDisponibles())
-                        .maxQuotaPerClient(c.getQuotaMaxParClient())
-                        .build())
-                .toList();
+//    private EventResponse mapToResponse(Evenement event) {
+//        List<EventResponse.CategoryResponse> categories = event.getCategories().stream()
+//                .map(c -> EventResponse.CategoryResponse.builder()
+//                        .id(c.getId())
+//                        .categoryName(c.getCategory().getName())
+//                        .unitPrice(c.getPrixUnitaire())
+//                        .totalQuantity(c.getQuantiteTotale())
+//                        .availablePlaces(c.getPlacesDisponibles())
+//                        .maxQuotaPerClient(c.getQuotaMaxParClient())
+//                        .build())
+//                .toList();
+//
+//        return EventResponse.builder()
+//                .id(event.getId())
+//                .title(event.getTitre())
+//                .description(event.getDescription())
+//                .location(event.getLieu())
+//                .startDate(event.getDateDebut())
+//                .endDate(event.getDateFin())
+//                .status(event.getStatut().name())
+//                .organizerName(event.getOrganisateur().getOrganisationName())
+//                .categories(categories)
+//                .build();
+//    }
 
-        return EventResponse.builder()
-                .id(event.getId())
-                .title(event.getTitre())
-                .description(event.getDescription())
-                .location(event.getLieu())
-                .startDate(event.getDateDebut())
-                .endDate(event.getDateFin())
-                .status(event.getStatut().name())
-                .organizerName(event.getOrganisateur().getOrganisationName())
-                .categories(categories)
-                .build();
-    }
 }
