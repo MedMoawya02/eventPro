@@ -45,6 +45,7 @@ public class EventService {
                 .dateFin(request.getEndDate())
                 .dateOuvertureVente(request.getSalesOpeningDate())
                 .dateClotureVente(request.getSalesClosingDate())
+                .capacite(request.getCapacity())
                 .statut(StatutEvenement.DRAFT)
                 .categories(new ArrayList<>())
                 .build();

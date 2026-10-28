@@ -29,7 +29,8 @@ public class Evenement {
     private LocalDateTime dateFin;
     private LocalDateTime dateOuvertureVente;
     private LocalDateTime dateClotureVente;
-
+    @Column(nullable = false)
+    private int capacite;
     @Enumerated(EnumType.STRING)
     private StatutEvenement statut;
 
