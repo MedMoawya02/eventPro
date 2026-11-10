@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     tools {
-        // Utilise les noms définis dans la configuration globale
         maven 'Maven3'
         jdk 'jdk17'
     }
@@ -10,15 +9,48 @@ pipeline {
     stages {
         stage('Build & Test') {
             steps {
-                // -B : mode batch (pas de couleurs interactives)
                 sh 'mvn clean test -B'
             }
             post {
                 always {
-                    // Publie les résultats des tests JUnit dans Jenkins
                     junit 'target/surefire-reports/*.xml'
                 }
             }
+        }
+
+        stage('Coverage') {
+            steps {
+                sh 'mvn jacoco:report'
+            }
+            post {
+                always {
+                    jacoco(
+                        execPattern: 'target/jacoco.exec',
+                        classPattern: 'target/classes',
+                        sourcePattern: 'src/main/java'
+                    )
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package -DskipTests -B'
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo '❌ Build échoué. Vérifiez les logs.'
+        }
+        success {
+            echo '✅ Build réussi. JAR disponible dans les artefacts.'
         }
     }
 }
