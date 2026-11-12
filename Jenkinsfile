@@ -18,6 +18,15 @@ pipeline {
             }
         }
 
+        // ÉTAPE SONARQUBE
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=eventpro-api'
+                }
+            }
+        }
+
         stage('Coverage') {
             steps {
                 sh 'mvn jacoco:report'
@@ -27,7 +36,8 @@ pipeline {
                     jacoco(
                         execPattern: 'target/jacoco.exec',
                         classPattern: 'target/classes',
-                        sourcePattern: 'src/main/java'
+                        sourcePattern: 'src/main/java',
+                        exclusionPattern: '**/dto/**,**/entity/**,**/mapper/**,**/repository/**,**/config/**,**/*Application*'
                     )
                 }
             }
