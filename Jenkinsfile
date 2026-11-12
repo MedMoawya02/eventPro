@@ -19,13 +19,18 @@ pipeline {
         }
 
         // ÉTAPE SONARQUBE
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.11.0.3922:sonar -Dsonar.projectKey=eventpro-api'
-                }
-            }
-        }
+       stage('SonarQube Analysis') {
+           steps {
+               withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                   sh '''
+                       mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.11.0.3922:sonar \
+                       -Dsonar.projectKey=eventpro-api \
+                       -Dsonar.host.url=http://host.docker.internal:9000 \
+                       -Dsonar.login=$SONAR_TOKEN
+                   '''
+               }
+           }
+       }
 
         stage('Coverage') {
             steps {
