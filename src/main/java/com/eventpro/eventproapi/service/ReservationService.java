@@ -3,17 +3,20 @@ package com.eventpro.eventproapi.service;
 import com.eventpro.eventproapi.dto.request.ReservationRequest;
 import com.eventpro.eventproapi.dto.response.ReservationResponse;
 import com.eventpro.eventproapi.entity.*;
+import com.eventpro.eventproapi.exception.AucuneReservationTrouveeException;
 import com.eventpro.eventproapi.exception.InsufficientStockException;
 import com.eventpro.eventproapi.exception.ResourceNotFoundException;
 import com.eventpro.eventproapi.mapper.ReservationMapper;
 import com.eventpro.eventproapi.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.LifecycleState;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -92,5 +95,14 @@ public class ReservationService {
         Reservation saved=reservationRepository.save(reservation);
         return reservationMapper.toResponse(saved);
 //        reservationRepository.save(reservation);
+    }
+
+    //methode de mise en situation
+    public List<Reservation> findReser(String email,String name,Integer quantitMin){
+        List<Reservation> reservations=reservationRepository.findReser(StatutReservation.CONFIRMED,email,name,quantitMin);
+        if(reservations.isEmpty()){
+            throw new AucuneReservationTrouveeException("Aucune rsesrvation trouvée");
+        }
+        return reservations;
     }
 }

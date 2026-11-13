@@ -54,4 +54,10 @@ public class GlobalExceptionHandler {
         body.put("message", message);
         return ResponseEntity.status(status).body(body);
     }
+
+    //Exception mise ensituation
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String,Object>> handleNotFound(RuntimeException ex){
+        return buildError(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
 }
